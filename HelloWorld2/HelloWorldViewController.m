@@ -7,6 +7,7 @@
 //
 
 #import "HelloWorldViewController.h"
+#import "SecondViewController.h"
 
 @interface HelloWorldViewController()
 @property (weak, nonatomic) IBOutlet UILabel *label;
@@ -16,6 +17,12 @@
 @end
 
 @implementation HelloWorldViewController
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    SecondViewController *vc = [segue destinationViewController];
+    vc.message = self.textField.text;
+}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)theTextField {
     
