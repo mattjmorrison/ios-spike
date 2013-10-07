@@ -13,13 +13,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *label;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 - (IBAction)changeGreeting:(id)sender;
+- (IBAction)Dummy:(id)sender;
 
 @end
 
 @implementation HelloWorldViewController
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
     SecondViewController *vc = [segue destinationViewController];
     vc.message = self.textField.text;
 }
@@ -38,15 +38,23 @@
     self.textField.text = @"";
 }
 
+- (IBAction)Dummy:(id)sender {
+    NSLog(@"In DUmmy");
+}
+
 - (NSString *) getClasses {
-    NSString *url = @"http://test.myattendancetracker.com/api/class";
-    
+    NSString *url = @"http://test.myattendancetracker.com/api/login";
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL:[NSURL URLWithString: url]];
-    NSHTTPURLResponse* urlResponse = nil;
+    [request setURL: [NSURL URLWithString: url]];
+    [request setHTTPMethod: @"POST"];
+    
+    NSString *postString = @"api=auth&email_address=nicolen.morrison@gmail.com&password=sugieballs";
+    [request setHTTPBody: [postString dataUsingEncoding: NSUTF8StringEncoding]];
+    NSHTTPURLResponse *urlResponse = nil;
     NSError *error = [[NSError alloc] init];
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
     NSString *result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    
     
     if ([urlResponse statusCode] == 200) {
         return result;
