@@ -14,10 +14,12 @@
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 - (IBAction)changeGreeting:(id)sender;
 - (IBAction)Dummy:(id)sender;
+@property (weak, nonatomic) NSMutableData *receivedData;
 
 @end
 
 @implementation HelloWorldViewController
+@synthesize receivedData;
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     SecondViewController *vc = [segue destinationViewController];
@@ -34,15 +36,15 @@
 }
 
 - (IBAction)changeGreeting:(id)sender {
-    self.label.text = [self getClasses];
+    [self getClasses];
     self.textField.text = @"";
 }
 
 - (IBAction)Dummy:(id)sender {
-    NSLog(@"In DUmmy");
 }
 
-- (NSString *) getClasses {
+- (NSMutableURLRequest *) buildRequest {
+    NSLog(@"buildRequest");
     NSString *url = @"http://test.myattendancetracker.com/api/login";
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL: [NSURL URLWithString: url]];
@@ -50,15 +52,22 @@
     
     NSString *postString = @"api=auth&email_address=nicolen.morrison@gmail.com&password=sugieballs";
     [request setHTTPBody: [postString dataUsingEncoding: NSUTF8StringEncoding]];
-    NSHTTPURLResponse *urlResponse = nil;
-    NSError *error = [[NSError alloc] init];
-    NSData *responseData = [NSURLConnection sendSynchronousRequest: request returningResponse: &urlResponse error: &error];
-    NSString *result = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    return request;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    self.label.text = result;
+}
+
+- (void) getClasses {
+    NSMutableURLRequest *request = [self buildRequest];
+
+    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     
-    
-    if ([urlResponse statusCode] == 200) {
-        return result;
+    if (theConnection) {
+        receivedData = nil;
     }
-    return @"error";
 }
 @end
