@@ -8,6 +8,8 @@
 
 #import "HelloWorldViewController.h"
 #import "SecondViewController.h"
+#import "MyAtApiClient.h"
+
 
 @interface HelloWorldViewController()
 @property (weak, nonatomic) IBOutlet UILabel *label;
@@ -15,11 +17,11 @@
 - (IBAction)changeGreeting:(id)sender;
 - (IBAction)Dummy:(id)sender;
 @property (weak, nonatomic) NSMutableData *receivedData;
-
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @end
 
 @implementation HelloWorldViewController
-@synthesize receivedData;
+@synthesize receivedData, spinner;
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     SecondViewController *vc = [segue destinationViewController];
@@ -36,38 +38,17 @@
 }
 
 - (IBAction)changeGreeting:(id)sender {
-    [self getClasses];
+    [spinner startAnimating];
+    MyAtApiClient *client = [[MyAtApiClient alloc] init];
+    [client getClasses: ^(NSString *data){
+        [spinner stopAnimating];
+        self.label.text = data;
+    }];
     self.textField.text = @"";
 }
 
 - (IBAction)Dummy:(id)sender {
 }
 
-- (NSMutableURLRequest *) buildRequest {
-    NSLog(@"buildRequest");
-    NSString *url = @"http://test.myattendancetracker.com/api/login";
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setURL: [NSURL URLWithString: url]];
-    [request setHTTPMethod: @"POST"];
-    
-    NSString *postString = @"api=auth&email_address=nicolen.morrison@gmail.com&password=sugieballs";
-    [request setHTTPBody: [postString dataUsingEncoding: NSUTF8StringEncoding]];
-    return request;
-}
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    self.label.text = result;
-}
-
-- (void) getClasses {
-    NSMutableURLRequest *request = [self buildRequest];
-
-    NSURLConnection *theConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    
-    if (theConnection) {
-        receivedData = nil;
-    }
-}
 @end
