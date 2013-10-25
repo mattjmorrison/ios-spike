@@ -9,6 +9,8 @@
 #import "HelloWorldViewController.h"
 #import "SecondViewController.h"
 #import "MyAtApiClient.h"
+#import "HelloWorldAppDelegate.h"
+#import "Auth.h"
 
 
 @interface HelloWorldViewController()
@@ -18,10 +20,19 @@
 - (IBAction)Dummy:(id)sender;
 @property (weak, nonatomic) NSMutableData *receivedData;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @end
 
 @implementation HelloWorldViewController
 @synthesize receivedData, spinner;
+
+- (void) viewDidLoad {
+    //1
+    HelloWorldAppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+    //2
+    self.managedObjectContext = appDelegate.managedObjectContext;
+}
+
 
 - (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     SecondViewController *vc = [segue destinationViewController];
@@ -40,7 +51,7 @@
 - (IBAction)changeGreeting:(id)sender {
     [spinner startAnimating];
     MyAtApiClient *client = [[MyAtApiClient alloc] init];
-    [client getClasses: ^(NSString *data){
+    [client getClasses: @"nicolen.morrison@gmail.com" password:@"sugieballs" callback:^(NSString *data){
         [spinner stopAnimating];
         self.label.text = data;
     }];

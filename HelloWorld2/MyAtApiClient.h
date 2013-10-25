@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface MyAtApiClient : NSObject
-- (void) getClasses: (void (^)(NSString *))callback;
+- (void) getClasses: (NSString *)username password:(NSString *)password callback: (void (^)(NSString *))callback;
 @end

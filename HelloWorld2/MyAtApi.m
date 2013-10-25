@@ -17,6 +17,12 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    NSError *e = nil;
+    NSDictionary *jsonObject = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data options: NSJSONReadingAllowFragments error: &e];
+    
+    NSLog([jsonObject objectForKey:@"token"]);
+
+    
     NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         
     self.callback(result);
