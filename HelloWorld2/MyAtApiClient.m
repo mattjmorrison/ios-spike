@@ -47,7 +47,7 @@
             [token writeToFile:appFile atomically: YES];
             callback(data);
         }];
-        NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:api];
+    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:api];
         if (conn != nil) {
             NSLog(@"Error Creating Connection");
         }
