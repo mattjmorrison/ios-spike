@@ -29,6 +29,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:name];
     }
+    cell.backgroundColor = [UIColor redColor];
     cell.textLabel.text = [tableData objectAtIndex:indexPath.row];
     cell.detailTextLabel.text = cell.textLabel.text;
     return cell;
